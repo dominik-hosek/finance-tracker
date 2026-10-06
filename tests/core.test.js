@@ -100,3 +100,28 @@ test('tipy obsahují předplatné, rozvoz a poplatky', () => {
   const ids = generateInsights(txs, '2026-09').map((i) => i.id);
   for (const id of ['subs', 'delivery', 'fees', 'small']) assert.ok(ids.includes(id), `chybí tip ${id}; mám ${ids}`);
 });
+
+test('export z George (Česká spořitelna) v UTF-16 se sloupci vlastníka', () => {
+  const csv = [
+    '"Název účtu vlastníka","Číslo účtu vlastníka","Datum zaúčtování","Název protiúčtu","IBAN","BIC","Protiúčet","Bankovní kód protiúčtu","Částka","Měna"',
+    '"Osobní účet","1234567890/0800","05.09.2026","Lidl dekuje za nakup","","","","","-412,50","CZK"',
+    '"Osobní účet","1234567890/0800","06.09.2026","PETRA NOVÁKOVÁ","","","2000123456","2010","1 500,00","CZK"',
+  ].join('\r\n');
+  const bytes = new Uint8Array(Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(csv, 'utf16le')]));
+  const { account, transactions } = importStatement(bytes, 'export.csv');
+  assert.equal(account.number, '1234567890/0800');
+  assert.equal(account.name, 'Osobní účet · 1234567890/0800');
+  assert.equal(transactions.length, 2);
+  assert.equal(transactions[0].counterparty, 'Lidl dekuje za nakup');
+  assert.equal(transactions[0].amount, -412.5);
+  assert.equal(transactions[1].counterAccount, '2000123456/2010');
+  const txs = enrich({ transactions });
+  assert.equal(txs.find((t) => t.amount === -412.5).category, 'groceries');
+  assert.equal(txs.find((t) => t.amount === 1500).category, 'people_in');
+});
+
+test('rozpoznání plateb lidem vs. obchodům', async () => {
+  const { looksLikePerson } = await import('../src/lib/categories.js');
+  for (const n of ['BARBORA KAŠPAROVÁ', 'Novák, Jan', 'misa rehak']) assert.ok(looksLikePerson(n), n);
+  for (const n of ['ISP HRADEC KRALOVE AS', 'Lidl dekuje za nakup', 'Qerko *Qerko', 'Google One', 'Neznámý obchod', 'R-Sa, Spol. S R.O.']) assert.ok(!looksLikePerson(n), n);
+});

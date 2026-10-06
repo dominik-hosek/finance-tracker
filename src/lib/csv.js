@@ -1,12 +1,32 @@
-// Robustní CSV parser: detekce kódování (UTF-8 / Windows-1250), oddělovače a uvozovek.
+// Robustní CSV parser: detekce kódování (UTF-8 / UTF-16 / Windows-1250), oddělovače a uvozovek.
 
-/** Dekóduje bajty souboru. České banky často exportují ve Windows-1250. */
+/** Pozná UTF-16 podle BOM nebo podle nulových bajtů (ASCII znaky mají v UTF-16 druhý bajt 0). */
+function utf16Encoding(u8) {
+  if (u8[0] === 0xff && u8[1] === 0xfe) return 'utf-16le';
+  if (u8[0] === 0xfe && u8[1] === 0xff) return 'utf-16be';
+  const n = Math.min(u8.length - (u8.length % 2), 400);
+  let even = 0;
+  let odd = 0;
+  for (let i = 0; i < n; i += 2) {
+    if (u8[i] === 0) even++;
+    if (u8[i + 1] === 0) odd++;
+  }
+  if (n && odd / (n / 2) > 0.3 && even === 0) return 'utf-16le';
+  if (n && even / (n / 2) > 0.3 && odd === 0) return 'utf-16be';
+  return null;
+}
+
+/**
+ * Dekóduje bajty souboru. České banky exportují v UTF-8, Windows-1250
+ * nebo (např. George od České spořitelny) v UTF-16.
+ */
 export function decodeBytes(bytes) {
   const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  const strip = (t) => (t.charCodeAt(0) === 0xfeff ? t.slice(1) : t);
+  const utf16 = utf16Encoding(u8);
+  if (utf16) return strip(new TextDecoder(utf16).decode(u8));
   try {
-    let text = new TextDecoder('utf-8', { fatal: true }).decode(u8);
-    if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
-    return text;
+    return strip(new TextDecoder('utf-8', { fatal: true }).decode(u8));
   } catch {
     return new TextDecoder('windows-1250').decode(u8);
   }

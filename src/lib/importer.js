@@ -9,13 +9,15 @@ import { fold } from './text.js';
 // Pořadí = priorita (stejná role se může objevit víckrát). Vzor začínající "="
 // musí odpovídat celému názvu sloupce, krátké vzory (<=3 znaky) celému slovu.
 const ROLE_PATTERNS = [
+  ['ownerName', ['nazev uctu vlastnika', 'nazev vlastnika', 'vlastnik uctu']],
+  ['ownerAccount', ['cislo uctu vlastnika', 'ucet vlastnika', 'iban vlastnika']],
   ['ignore', ['puvodni', 'mene transakce', 'original', 'zustatek', 'balance', 'kurz', 'exchange rate', 'ks', 'ss', 'konstantni symbol', 'specificky symbol', 'cislo karty', 'id pohybu', 'id transakce', 'id pokynu', 'identifikace transakce', 'nazev banky', 'skupina plateb', 'product', 'produkt', 'bic']],
   ['date', ['datum zauctovani', 'datum provedeni', 'datum transakce', 'datum platby', 'datum pohybu', 'zauctovano', 'booking date', 'completed date', 'transaction date', 'started date']],
   ['date2', ['datum splatnosti', 'datum odepsani', 'valuta']],
   ['date', ['datum', 'date']],
   ['vs', ['variabilni symbol', 'vs']],
   ['counterAccount', ['cislo protiuctu', 'protiucet', 'cislo uctu protistrany', 'ucet protistrany', 'iban protistrany', 'counterparty account']],
-  ['bankCode', ['kod banky', 'banka protiuctu']],
+  ['bankCode', ['kod banky', 'bankovni kod', 'banka protiuctu']],
   ['fee', ['poplatek', 'poplatk', 'fee', 'fees']],
   ['debit', ['debet', '=vydaj', '=vydaje', 'odchozi castka', 'money out', 'paid out', 'withdrawal']],
   ['credit', ['kredit', '=prijem', '=prijmy', 'prichozi castka', 'money in', 'paid in', 'deposit']],
@@ -163,9 +165,14 @@ export function importStatement(content, fileName = 'ucet.csv') {
     throw new Error(`V souboru „${fileName}“ jsem nenašel hlavičku se sloupci datum a částka.`);
   }
   const { headerIndex, map, extra } = cols;
-  const number = findAccountNumber(rows, headerIndex);
+  // Číslo a název vlastního účtu: z preambule, nebo ze sloupců „… vlastníka“ (George).
+  const firstRow = rows[headerIndex + 1] || [];
+  const ownCell = (role) => (map[role] !== undefined ? (firstRow[map[role]] || '').trim() : '');
+  const number = findAccountNumber(rows, headerIndex) || ownCell('ownerAccount');
+  const ownerName = ownCell('ownerName');
   const baseName = fileName.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim();
-  const account = { id: hash(number || baseName), name: baseName || number || 'Účet', number };
+  const name = ownerName ? [ownerName, number].filter(Boolean).join(' · ') : baseName || number || 'Účet';
+  const account = { id: hash(number || baseName), name, number };
 
   const get = (r, role) => (map[role] !== undefined ? r[map[role]] ?? '' : '');
   const seen = new Map();
