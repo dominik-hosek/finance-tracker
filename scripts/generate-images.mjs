@@ -12,6 +12,10 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+// Na Windows je `codex` .cmd shim, který spawnSync bez shellu nenajde.
+const SHELL = process.platform === 'win32';
 
 const STYLE =
   'Flat vector illustration in a soft, friendly, modern fintech style. ' +
@@ -49,8 +53,8 @@ export const IMAGES = {
 function main() {
   const which = process.argv.slice(2);
   const names = which.length ? which : Object.keys(IMAGES);
-  const check = spawnSync('codex', ['--version'], { encoding: 'utf8' });
-  if (check.error) {
+  const check = spawnSync('codex', ['--version'], { encoding: 'utf8', shell: SHELL });
+  if (check.error || check.status !== 0) {
     console.error('Codex CLI nenalezen. Nainstaluj ho: npm i -g @openai/codex && codex login');
     process.exit(1);
   }
@@ -66,10 +70,15 @@ function main() {
       `Size: ${spec.size}.${spec.transparent ? ' Use a transparent background.' : ''}\n` +
       `Do not modify any other files.\n\nImage prompt:\n${spec.prompt}`;
     console.log(`→ ${name} (${spec.size})`);
-    const r = spawnSync('codex', ['exec', '--full-auto', '--skip-git-repo-check', task], { stdio: 'inherit' });
+    // Zadání jde přes stdin (`-`), aby víceřádkový prompt přežil i shell na Windows.
+    const r = spawnSync('codex', ['exec', '--sandbox', 'workspace-write', '--skip-git-repo-check', '-'], {
+      input: task,
+      stdio: ['pipe', 'inherit', 'inherit'],
+      shell: SHELL,
+    });
     if (r.status !== 0 || !existsSync(out)) console.error(`  ✗ ${name}: Codex obrázek neuložil (zkontroluj výstup výše).`);
     else console.log(`  ✓ uloženo do ${out}`);
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();

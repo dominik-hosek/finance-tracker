@@ -1,5 +1,5 @@
 // Ilustrace: pokud existuje vygenerovaný obrázek (PNG/WebP z Codexu, viz
-// scripts/generate-images.sh), použije se přednostně; jinak SVG fallback.
+// scripts/generate-images.mjs), použije se přednostně; jinak SVG fallback.
 const files = import.meta.glob('./assets/img/*.{svg,png,webp}', { eager: true, query: '?url', import: 'default' });
 
 const byName = {};
