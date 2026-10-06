@@ -5,7 +5,7 @@ const files = import.meta.glob('./assets/img/*.{svg,png,webp}', { eager: true, q
 const byName = {};
 for (const [path, url] of Object.entries(files)) {
   const [, name, ext] = path.match(/\/([^/]+)\.(\w+)$/);
-  const rank = ext === 'svg' ? 0 : 1;
+  const rank = { svg: 0, png: 1, webp: 2 }[ext];
   if (!byName[name] || rank > byName[name].rank) byName[name] = { url, rank };
 }
 

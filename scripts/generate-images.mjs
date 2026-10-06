@@ -4,15 +4,21 @@
 // Předpoklady: `npm i -g @openai/codex` a přihlášení (`codex login`).
 // Použití:     npm run images              – všechny obrázky
 //              npm run images -- hero idea – jen vybrané
+//              npm run images -- --optimize – jen zmenší už stažená PNG
 //
-// Každý obrázek se uloží jako src/assets/img/<název>.png. Aplikace pak PNG
-// automaticky použije místo ručně kreslené SVG verze (viz src/images.js).
-// Když PNG smažeš, vrátí se SVG.
+// Codex uloží obrázek jako PNG, skript ho pak zmenší na velikost, ve které ho
+// aplikace zobrazuje (s rezervou pro jemné displeje), a uloží jako
+// src/assets/img/<název>.webp. Aplikace WebP automaticky použije místo ručně
+// kreslené SVG verze (viz src/images.js). Když WebP smažeš, vrátí se SVG.
 
 import { spawnSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, unlinkSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import sharp from 'sharp';
+
+// Šířka výsledného WebP v px: zhruba 3× největší zobrazená velikost v CSS.
+const ICON_WIDTH = 256;
 
 // Na Windows je `codex` .cmd shim, který spawnSync bez shellu nenajde.
 const SHELL = process.platform === 'win32';
@@ -28,15 +34,18 @@ const ICON = 'Square 1024x1024 icon tile with a soft pastel rounded-square backg
 export const IMAGES = {
   hero: {
     size: '1536x1024',
+    width: 1200,
     prompt: `Landscape hero illustration for a personal finance app called "Kasička" (Czech for piggy bank). A cheerful coral piggy bank in the foreground, a coin dropping into it, a paper receipt on the left, a floating card with a rising bar chart on the right and a small green plant growing out of a stack of gold coins. Background: soft gradient from mint to cream with large blurred circles. ${STYLE}`,
   },
   empty: {
     size: '1024x1024',
+    width: 640,
     prompt: `Two bank statement sheets gently falling into an open deep-green folder with an upward arrow, on a transparent background. Conveys "drop your files here". ${STYLE}`,
     transparent: true,
   },
   logo: {
     size: '1024x1024',
+    width: 128,
     prompt: `App icon: a minimal mint piggy bank seen from the side with a gold coin above its slot, on a deep green (#0F5B4F) rounded-square background. ${STYLE}`,
   },
   subscriptions: { size: '1024x1024', prompt: `${ICON} A coral streaming/video card with a play triangle and a small circular repeat arrow badge. Light peach background. ${STYLE}` },
@@ -50,21 +59,40 @@ export const IMAGES = {
   idea: { size: '1024x1024', prompt: `${ICON} A glowing gold light bulb with short rays around it. Light warm-yellow background. ${STYLE}` },
 };
 
-function main() {
-  const which = process.argv.slice(2);
+const imgPath = (name, ext) => resolve('src/assets/img', `${name}.${ext}`);
+
+/** Zmenší <název>.png na cílovou šířku, uloží jako .webp a PNG smaže. */
+async function optimize(name) {
+  const png = imgPath(name, 'png');
+  const webp = imgPath(name, 'webp');
+  const width = IMAGES[name].width ?? ICON_WIDTH;
+  const info = await sharp(png).resize({ width, withoutEnlargement: true }).webp({ quality: 82, alphaQuality: 90, effort: 6 }).toFile(webp);
+  unlinkSync(png);
+  console.log(`  ✓ ${name}.webp ${info.width}×${info.height}, ${Math.round(info.size / 1024)} kB`);
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  const which = args.filter((a) => !a.startsWith('--'));
   const names = which.length ? which : Object.keys(IMAGES);
+  for (const name of names) {
+    if (!IMAGES[name]) console.error(`Neznámý obrázek „${name}“. Dostupné: ${Object.keys(IMAGES).join(', ')}`);
+  }
+  const known = names.filter((n) => IMAGES[n]);
+
+  if (args.includes('--optimize')) {
+    for (const name of known) if (existsSync(imgPath(name, 'png'))) await optimize(name);
+    return;
+  }
+
   const check = spawnSync('codex', ['--version'], { encoding: 'utf8', shell: SHELL });
   if (check.error || check.status !== 0) {
     console.error('Codex CLI nenalezen. Nainstaluj ho: npm i -g @openai/codex && codex login');
     process.exit(1);
   }
-  for (const name of names) {
+  for (const name of known) {
     const spec = IMAGES[name];
-    if (!spec) {
-      console.error(`Neznámý obrázek „${name}“. Dostupné: ${Object.keys(IMAGES).join(', ')}`);
-      continue;
-    }
-    const out = resolve('src/assets/img', `${name}.png`);
+    const out = imgPath(name, 'png');
     const task =
       `Generate ONE image with your image generation tool and save it as a PNG file at exactly this path: ${out}\n` +
       `Size: ${spec.size}.${spec.transparent ? ' Use a transparent background.' : ''}\n` +
@@ -77,8 +105,8 @@ function main() {
       shell: SHELL,
     });
     if (r.status !== 0 || !existsSync(out)) console.error(`  ✗ ${name}: Codex obrázek neuložil (zkontroluj výstup výše).`);
-    else console.log(`  ✓ uloženo do ${out}`);
+    else await optimize(name);
   }
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
