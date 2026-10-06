@@ -553,6 +553,8 @@ window.addEventListener('resize', () => {
   resizeTimer = setTimeout(() => charts.forEach((c) => c._redraw?.()), 120);
 });
 
+// favicon = aktuální logo (vygenerované, nebo SVG fallback)
+document.querySelector('link[rel="icon"]').href = img('logo');
 hydrateImages();
 recompute();
 render();

@@ -38,7 +38,7 @@ Každý soubor = jeden účet (název se vezme z názvu souboru a jde přejmenov
 
 ## Ilustrace přes Codex
 
-Ilustrace (hero obrázek, logo, prázdný stav, ikony tipů) jsou zatím ručně kreslená SVG v `src/assets/img/`. Hotové prompty pro jejich vygenerování přes [Codex CLI](https://github.com/openai/codex) jsou ve `scripts/generate-images.mjs`:
+Ilustrace (hero obrázek, logo, prázdný stav, ikony tipů) jsou vygenerované přes Codex; ručně kreslená SVG ve stejné složce slouží jako záloha. Prompty pro jejich vygenerování přes [Codex CLI](https://github.com/openai/codex) jsou ve `scripts/generate-images.mjs`:
 
 ```bash
 npm i -g @openai/codex && codex login
@@ -46,7 +46,7 @@ npm run images            # všechny obrázky
 npm run images -- hero    # jen vybrané
 ```
 
-Vygenerované `src/assets/img/<název>.png` aplikace automaticky použije místo SVG (`src/images.js`). Když PNG smažeš, vrátí se SVG.
+Skript obrázky z Codexu zmenší a uloží jako `src/assets/img/<název>.webp`; aplikace je automaticky použije místo SVG (`src/images.js`), včetně faviconu. Když WebP smažeš, vrátí se SVG. Už stažená PNG jde jen převést přes `npm run images -- --optimize`.
 
 ## Struktura
 
