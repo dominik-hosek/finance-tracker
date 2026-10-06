@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kasička – finance tracker</title>
+    <meta name="description" content="Nahraj měsíční výpisy ze všech účtů a Kasička je rozřadí do kategorií, oddělí pravidelné výdaje a najde, kde ušetřit." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="wrap topbar-inner">
+        <a class="brand" href="#" aria-label="Kasička – domů">
+          <img data-img="logo" alt="" width="36" height="36" />
+          <span>Kasička</span>
+        </a>
+        <div class="topbar-actions">
+          <label class="btn btn-primary">
+            <input id="file-input" type="file" accept=".csv,.txt,text/csv" multiple hidden />
+            <span aria-hidden="true">＋</span> Nahrát výpisy
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <main id="app" class="wrap"></main>
+
+    <div id="drop-overlay" class="drop-overlay" hidden>
+      <div class="drop-card">
+        <img data-img="empty" alt="" />
+        <p>Pusť výpisy sem</p>
+      </div>
+    </div>
+    <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <footer class="wrap footer">
+      Data zůstávají jen v tvém prohlížeči – nic se neodesílá na server. Tipy jsou orientační odhady, ne finanční poradenství.
+    </footer>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

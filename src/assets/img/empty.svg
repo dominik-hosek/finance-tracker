@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" role="img" aria-label="Výpisy padající do složky">
+  <ellipse cx="160" cy="200" rx="120" ry="12" fill="#1f2a2e" opacity=".07"/>
+  <g transform="translate(70 30) rotate(-10)"><rect width="90" height="116" rx="10" fill="#fff" stroke="#1f2a2e" stroke-opacity=".1"/><rect x="14" y="16" width="44" height="8" rx="4" fill="#f28c6b"/><g fill="#dfe5e3"><rect x="14" y="36" width="62" height="6" rx="3"/><rect x="14" y="50" width="52" height="6" rx="3"/><rect x="14" y="64" width="58" height="6" rx="3"/></g></g>
+  <g transform="translate(150 20) rotate(8)"><rect width="90" height="116" rx="10" fill="#fff" stroke="#1f2a2e" stroke-opacity=".1"/><rect x="14" y="16" width="44" height="8" rx="4" fill="#2fa784"/><g fill="#dfe5e3"><rect x="14" y="36" width="62" height="6" rx="3"/><rect x="14" y="50" width="52" height="6" rx="3"/><rect x="14" y="64" width="58" height="6" rx="3"/></g><text x="14" y="100" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#0f5b4f">CSV</text></g>
+  <path d="M60 120h70l14 14h116a10 10 0 0 1 10 10v46a10 10 0 0 1-10 10H60a10 10 0 0 1-10-10v-60a10 10 0 0 1 10-10z" fill="#0f5b4f"/>
+  <path d="M50 146h220v44a10 10 0 0 1-10 10H60a10 10 0 0 1-10-10z" fill="#2fa784"/>
+  <circle cx="160" cy="172" r="16" fill="#fff"/><path d="M160 180v-15m-7 7 7-7 7 7" stroke="#0f5b4f" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

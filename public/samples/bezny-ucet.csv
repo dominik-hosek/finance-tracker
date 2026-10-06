@@ -1,0 +1,32 @@
+﻿Výpis z účtu 1234567890/0800 – Běžný účet
+
+Datum zaúčtování,Částka,Měna,Název protiúčtu,Číslo protiúčtu,Zpráva pro příjemce,Typ transakce
+01.07.2026,"-18500,00",CZK,Jan Novák,123456789/0100,Nájem byt Vinohrady,Trvalý příkaz
+05.07.2026,"-649,00",CZK,O2 Czech Republic,,Mobil + internet,Inkaso
+10.07.2026,"61200,00",CZK,ACME Software s.r.o.,2001234567/2010,Mzda 2026-07,Příchozí platba
+11.07.2026,"-6000,00",CZK,Revolut,,Top-up Revolut,Odchozí platba
+11.07.2026,"-8000,00",CZK,Air Bank,1122334455/3030,Převod mezi vlastními účty,Odchozí platba
+15.07.2026,"-2850,00",CZK,Pražská energetika,,Záloha elektřina,Inkaso
+18.07.2026,"-1350,00",CZK,Kooperativa pojišťovna,,Pojištění domácnosti a odpovědnosti,Trvalý příkaz
+20.07.2026,"-1200,00",CZK,Pražská plynárenská,,Záloha plyn,Inkaso
+28.07.2026,"-89,00",CZK,,,Poplatek za vedení účtu,Poplatek
+01.08.2026,"-18500,00",CZK,Jan Novák,123456789/0100,Nájem byt Vinohrady,Trvalý příkaz
+05.08.2026,"-649,00",CZK,O2 Czech Republic,,Mobil + internet,Inkaso
+10.08.2026,"61200,00",CZK,ACME Software s.r.o.,2001234567/2010,Mzda 2026-08,Příchozí platba
+11.08.2026,"-6000,00",CZK,Revolut,,Top-up Revolut,Odchozí platba
+11.08.2026,"-8000,00",CZK,Air Bank,1122334455/3030,Převod mezi vlastními účty,Odchozí platba
+15.08.2026,"-2850,00",CZK,Pražská energetika,,Záloha elektřina,Inkaso
+18.08.2026,"-1350,00",CZK,Kooperativa pojišťovna,,Pojištění domácnosti a odpovědnosti,Trvalý příkaz
+20.08.2026,"-1200,00",CZK,Pražská plynárenská,,Záloha plyn,Inkaso
+22.08.2026,"-4200,00",CZK,Dr. Max lékárna,,Platba kartou,Platba kartou
+28.08.2026,"-89,00",CZK,,,Poplatek za vedení účtu,Poplatek
+01.09.2026,"-18500,00",CZK,Jan Novák,123456789/0100,Nájem byt Vinohrady,Trvalý příkaz
+03.09.2026,"-3000,00",CZK,Bankomat Václavské nám.,,Výběr z bankomatu,Výběr hotovosti
+05.09.2026,"-649,00",CZK,O2 Czech Republic,,Mobil + internet,Inkaso
+10.09.2026,"61200,00",CZK,ACME Software s.r.o.,2001234567/2010,Mzda 2026-09,Příchozí platba
+11.09.2026,"-6000,00",CZK,Revolut,,Top-up Revolut,Odchozí platba
+11.09.2026,"-8000,00",CZK,Air Bank,1122334455/3030,Převod mezi vlastními účty,Odchozí platba
+15.09.2026,"-2850,00",CZK,Pražská energetika,,Záloha elektřina,Inkaso
+18.09.2026,"-1350,00",CZK,Kooperativa pojišťovna,,Pojištění domácnosti a odpovědnosti,Trvalý příkaz
+20.09.2026,"-1200,00",CZK,Pražská plynárenská,,Záloha plyn,Inkaso
+28.09.2026,"-89,00",CZK,,,Poplatek za vedení účtu,Poplatek

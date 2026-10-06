@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kasička">
+  <rect width="64" height="64" rx="16" fill="#0f5b4f"/>
+  <ellipse cx="31" cy="37" rx="18" ry="14" fill="#9fe0c7"/>
+  <circle cx="45" cy="32" r="2" fill="#0f5b4f"/>
+  <path d="M46 40c4 0 6-2 6-4" stroke="#9fe0c7" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <rect x="21" y="47" width="5" height="7" rx="2" fill="#9fe0c7"/>
+  <rect x="35" y="47" width="5" height="7" rx="2" fill="#9fe0c7"/>
+  <rect x="26" y="26" width="10" height="3" rx="1.5" fill="#0f5b4f"/>
+  <circle cx="31" cy="14" r="7" fill="#f2b84b"/>
+  <path d="M31 10.5v7" stroke="#b9801b" stroke-width="2" stroke-linecap="round"/>
+</svg>
